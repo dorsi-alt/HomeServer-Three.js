@@ -1,8 +1,13 @@
 import './style.css'
-import * as THREE from 'three'
+import * as three from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'dat.gui'
 
+
+//loading
+const textureLoader = new three.TextureLoader()
+
+const normalTexture = textureLoader.load('/textures/NormalMap.png')
 // Debug
 const gui = new dat.GUI()
 
@@ -10,23 +15,27 @@ const gui = new dat.GUI()
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
-const scene = new THREE.Scene()
+const scene = new three.Scene()
 
 // Objects
-const geometry = new THREE.TorusGeometry( .7, .2, 16, 100 );
+const geometry = new three.SphereBufferGeometry(.5,64,64)
 
 // Materials
 
-const material = new THREE.MeshBasicMaterial()
-material.color = new THREE.Color(0xff0000)
+const material = new three.MeshStandardMaterial()
+material.metalness = 0.7
+material.roughness = 0.2
+
+material.normalMap = normalTexture;
+material.color = new three.Color(0x292929)
 
 // Mesh
-const sphere = new THREE.Mesh(geometry,material)
+const sphere = new three.Mesh(geometry,material)
 scene.add(sphere)
 
 // Lights
 
-const pointLight = new THREE.PointLight(0xffffff, 0.1)
+const pointLight = new three.PointLight(0xffffff, 0.1)
 pointLight.position.x = 2
 pointLight.position.y = 3
 pointLight.position.z = 4
@@ -59,7 +68,7 @@ window.addEventListener('resize', () =>
  * Camera
  */
 // Base camera
-const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
+const camera = new three.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
 camera.position.x = 0
 camera.position.y = 0
 camera.position.z = 2
@@ -72,9 +81,11 @@ scene.add(camera)
 /**
  * Renderer
  */
-const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+const renderer = new three.WebGLRenderer({
+    canvas: canvas,
+    alpha: true 
 })
+
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 
@@ -82,7 +93,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
  * Animate
  */
 
-const clock = new THREE.Clock()
+const clock = new three.Clock()
 
 const tick = () =>
 {
